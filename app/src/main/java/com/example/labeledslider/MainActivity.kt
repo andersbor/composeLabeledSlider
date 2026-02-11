@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.labeledslider.ui.theme.LabeledSliderTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,13 +38,14 @@ class MainActivity : ComponentActivity() {
                     }
                 )
                 { innerPadding ->
-                    Column(modifier = Modifier.padding(innerPadding)) {
+                    Column(modifier = Modifier.padding(innerPadding).padding(16.dp)) {
                         var sliderPosition by remember { mutableFloatStateOf(0f) }
                         LabeledSlider(
-                            label = "Bottom",
-                            location = Location.RIGHT,
+                            label = "Length",
+                            location = Location.TOP,
                             value = sliderPosition,
-                            onValueChange = { sliderPosition = it }
+                            onValueChange = { sliderPosition = it },
+                            valueRange = 0f..250f
                         )
                         Text(text = "Position $sliderPosition")
                     }
@@ -63,15 +65,16 @@ fun LabeledSlider(
     onValueChange: (Float) -> Unit,
     label: String,
     location: Location = Location.TOP,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f
 ) {
     if (location == Location.TOP || location == Location.BOTTOM) {
         Column(modifier = modifier) {
             if (location == Location.TOP) {
                 Text(text = label)
-                Slider(value = value, onValueChange = onValueChange)
+                Slider(value = value, onValueChange = onValueChange, valueRange = valueRange)
             } else {
-                Slider(value = value, onValueChange = onValueChange)
+                Slider(value = value, onValueChange = onValueChange, valueRange = valueRange)
                 Text(text = label)
             }
         }
@@ -82,13 +85,14 @@ fun LabeledSlider(
         ) {
             if (location == Location.LEFT) {
                 Text(text = label)
-                Slider(value = value, onValueChange = onValueChange)
+                Slider(value = value, onValueChange = onValueChange, valueRange = valueRange)
             } else {
                 // https://github.com/JetBrains/compose-multiplatform/issues/1765
                 Slider(
                     value = value,
                     onValueChange = onValueChange,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    valueRange = valueRange
                 )
                 Text(text = label)
             }
